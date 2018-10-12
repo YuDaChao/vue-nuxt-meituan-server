@@ -48,7 +48,11 @@ router.get('/send_mail', async (ctx, next) => {
     return false
   }
   const code = getVerifycode()
-  const subject = '来自神秘星球的一封信, 您的验证码是: ' + code
+  // 将验证码暂存在cookie中
+  ctx.cookies.set('code', code, {
+    maxAge: 1000 * 60 // 一分钟
+  })
+  const subject = '来自(vue全家桶, nuxt.js高仿美团)的验证邮件, 您的验证码是: ' + code
   try {
     const info = await mailerService.sendMail(email, subject)
     ctx.body = {
@@ -63,6 +67,11 @@ router.get('/send_mail', async (ctx, next) => {
       data: {}
     }
   }
+})
+
+router.get('/code', async (ctx, next) => {
+  const code = ctx.cookies.get('code')
+  ctx.body = code
 })
 
 module.exports = router

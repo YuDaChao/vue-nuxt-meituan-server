@@ -4,10 +4,26 @@ const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
+const session = require('koa-session-minimal')
+const MysqlStore = require('koa-mysql-session')
 const logger = require('koa-logger')
+
+const sessionConfig = require('./config/session')
+const mysqlConfig = require('./config/mysql')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+
+
+const mysqlStore = new MysqlStore({
+  user: mysqlConfig.USER,
+  password: mysqlConfig.PASSWORD,
+  database: mysqlConfig.DATABASE,
+  host: mysqlConfig.HOST
+})
+
+sessionConfig.store = mysqlStore
+
 
 // error handler
 onerror(app)
@@ -18,6 +34,7 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(logger())
+app.use(session(sessionConfig, app))
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
