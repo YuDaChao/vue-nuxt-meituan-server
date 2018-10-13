@@ -8,7 +8,7 @@ router.prefix('/users')
 router.post('/register', async (ctx, next) => {
   const { userName, password, rePassword, email, code } = ctx.request.body
   // 获取存放在cookie中的验证码
-  const _code = ctx.cookies.get('code')
+  const _code = ctx.session.code
   if (!code) {
     ctx.body = {
       status: 1,

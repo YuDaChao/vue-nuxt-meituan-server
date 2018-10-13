@@ -37,8 +37,8 @@ router.get('/s_category', async (ctx, next) => {
   }
 })
 
-router.get('/send_mail', async (ctx, next) => {
-  const { email } = ctx.request.query
+router.post('/send_mail', async (ctx, next) => {
+  const { email } = ctx.request.body
   if (!email) {
     ctx.body = {
       status: 1,
@@ -49,29 +49,36 @@ router.get('/send_mail', async (ctx, next) => {
   }
   const code = getVerifycode()
   // 将验证码暂存在cookie中
-  ctx.cookies.set('code', code, {
-    maxAge: 1000 * 60 // 一分钟
-  })
+  ctx.session.code = code
   const subject = '来自(vue全家桶, nuxt.js高仿美团)的验证邮件, 您的验证码是: ' + code
   try {
     const info = await mailerService.sendMail(email, subject)
     ctx.body = {
       status: 0,
-      message: '发送成功',
+      message: '验证码发送成功，请注意查看',
       data: {}
     }
   } catch (e) {
     ctx.body = {
       status: 1,
-      message: '发送email失败',
+      message: '发送验证码失败, 稍后再试',
       data: {}
     }
   }
 })
 
 router.get('/code', async (ctx, next) => {
-  const code = ctx.cookies.get('code')
+  const code = ctx.session.code
   ctx.body = code
+})
+
+router.get('/clear_code', async (ctx, next) => {
+  ctx.session.code = null
+  ctx.body = {
+    status: 0,
+    message: '成功',
+    data: {}
+  }
 })
 
 module.exports = router
