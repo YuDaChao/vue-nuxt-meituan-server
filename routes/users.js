@@ -48,5 +48,30 @@ router.post('/login', async (ctx, next) => {
   ctx.body = result
 })
 
+router.post('/logout', async (ctx, next) => {
+  ctx.session.user = null
+  ctx.body = {
+    status: 0,
+    message: '成功',
+    data: {}
+  }
+})
+
+router.post('/info', async (ctx, next) => {
+  if (ctx.session && ctx.session.user) {
+    ctx.body = {
+      status: 0,
+      message: '成功',
+      data: ctx.session.user
+    }
+  } else {
+    ctx.body = {
+      status: 1,
+      message: '请重新登录',
+      data: {}
+    }
+  }
+})
+
 
 module.exports = router
