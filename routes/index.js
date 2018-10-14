@@ -5,6 +5,7 @@ const { getVerifycode } = require('../utils/getVerifycode')
 
 const categoryService = require('../service/category')
 const mailerService = require('../service/mailer')
+const cityService = require('../service/city')
 
 
 router.get('/category', async (ctx, next) => {
@@ -78,6 +79,24 @@ router.get('/clear_code', async (ctx, next) => {
     status: 0,
     message: '成功',
     data: {}
+  }
+})
+
+router.get('/cities', async (ctx, next) => {
+  const result = await cityService.findAllCity()
+  let collection = collect(result)
+  const grouped = collection.groupBy('city_label')
+  let data = []
+  for (let key in grouped.items) {
+    data.push({
+      label: key,
+      list: grouped.items[key].items
+    })
+  }
+  ctx.body = {
+    status: 0,
+    message: '成功',
+    data: data
   }
 })
 
