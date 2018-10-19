@@ -6,6 +6,7 @@ const { getVerifycode } = require('../utils/getVerifycode')
 const categoryService = require('../service/category')
 const mailerService = require('../service/mailer')
 const cityService = require('../service/city')
+const styleController = require('../controller/style')
 
 
 router.get('/category', async (ctx, next) => {
@@ -82,6 +83,19 @@ router.get('/clear_code', async (ctx, next) => {
   }
 })
 
+router.get('/styles', async (ctx, next) => {
+  const { tab } = ctx.request.query
+  const result = await styleController.findStyleList(tab)
+  ctx.body = {
+    status: 0,
+    message: '成功',
+    data: {
+      styles: result.data,
+      tabs: result.tabs
+    }
+  }
+})
+
 router.get('/cities', async (ctx, next) => {
   const result = await cityService.findAllCity()
   let collection = collect(result)
@@ -99,5 +113,26 @@ router.get('/cities', async (ctx, next) => {
     data: data
   }
 })
+
+router.get('/provinces', async (ctx, next) => {
+  const result = await cityService.findProvinceList()
+  let data = []
+  let collection = collect(result)
+  const grouped = collection.groupBy('code')
+  for (let key in grouped.items) {
+    data.push({
+      provinceCode: key,
+      provinceName: grouped.items[key].items[0].name,
+      list: grouped.items[key].items
+    })
+  }
+
+  ctx.body = {
+    status: 0,
+    message: '成功',
+    data: data
+  }
+})
+
 
 module.exports = router
