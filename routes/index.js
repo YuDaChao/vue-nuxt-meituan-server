@@ -84,8 +84,8 @@ router.get('/clear_code', async (ctx, next) => {
 })
 
 router.get('/styles', async (ctx, next) => {
-  const { tab } = ctx.request.query
-  const result = await styleController.findStyleList(tab)
+  const { tab, type } = ctx.request.query
+  const result = await styleController.findStyleList(tab, type)
   ctx.body = {
     status: 0,
     message: '成功',

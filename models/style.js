@@ -26,6 +26,9 @@ const Style = sequelize.define('style', {
   },
   tab: {
     type: Sequelize.STRING
+  },
+  tags: {
+    type: Sequelize.STRING
   }
 }, {
   freezeTableName: true, //禁用修改表名
