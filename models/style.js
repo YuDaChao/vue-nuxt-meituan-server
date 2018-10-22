@@ -21,7 +21,7 @@ const Style = sequelize.define('style', {
   old_price: {
     type: Sequelize.STRING
   },
-  info: {
+  bottom_info: {
     type: Sequelize.STRING
   },
   tab: {
